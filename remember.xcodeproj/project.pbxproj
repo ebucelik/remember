@@ -18,9 +18,22 @@
 		714E0CA42E812FA400508306 /* remember.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = remember.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		717717092E82CCEB00D5D1DE /* Exceptions for "remember" folder in "remember" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 714E0CA32E812FA400508306 /* remember */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		714E0CA62E812FA400508306 /* remember */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				717717092E82CCEB00D5D1DE /* Exceptions for "remember" folder in "remember" target */,
+			);
 			path = remember;
 			sourceTree = "<group>";
 		};
@@ -280,6 +293,7 @@
 				DEVELOPMENT_TEAM = 7UZH6B548Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = remember/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -316,6 +330,7 @@
 				DEVELOPMENT_TEAM = 7UZH6B548Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = remember/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

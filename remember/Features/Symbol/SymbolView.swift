@@ -15,6 +15,9 @@ struct SymbolView: View {
 
     @Dependency(\.appStyle) var appStyle
 
+    @State
+    private var scale = 0.0
+
     var body: some View {
         ZStack {
             GeometryReader { proxy in
@@ -26,7 +29,6 @@ struct SymbolView: View {
                             .font(
                                 appStyle.font(
                                     .title(
-                                        .regular,
                                         size: proxy.size.height > proxy.size.width
                                         ? proxy.size.width * 0.5
                                         : proxy.size.height * 0.5
@@ -39,7 +41,6 @@ struct SymbolView: View {
                             .font(
                                 appStyle.font(
                                     .title(
-                                        .regular,
                                         size: proxy.size.height > proxy.size.width
                                         ? proxy.size.width * 0.5
                                         : proxy.size.height * 0.5
@@ -47,21 +48,6 @@ struct SymbolView: View {
                                 )
                             )
                             .frame(maxWidth: .infinity)
-                            .draggable(currentEmoji) {
-                                Text(currentEmoji.emoji)
-                                    .font(
-                                        appStyle.font(
-                                            .title(
-                                                .regular,
-                                                size: proxy.size.height > proxy.size.width
-                                                    ? proxy.size.width
-                                                        * 0.5
-                                                    : proxy.size.height
-                                                        * 0.5
-                                            )
-                                        )
-                                    )
-                            }
                     }
 
                     Spacer()
@@ -72,9 +58,24 @@ struct SymbolView: View {
         .frame(maxWidth: .infinity)
         .background(Color(uiColor: store.backgroundColor))
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .shadow(color: appStyle.color(.primary), radius: 3, x: -2, y: 2)
         .overlay {
             RoundedRectangle(cornerRadius: 12)
-                .stroke(appStyle.color(.primary), lineWidth: 5)
+                .stroke(
+                    store.emojiDidMatch ?
+                    appStyle.color(.surface) :
+                    appStyle.color(.primary)
+                    , lineWidth: 3.5)
         }
+        .scaleEffect(scale)
+        .onAppear {
+            scale = 1.0
+        }
+        .onChange(of: store.removeSymbolFromView) { _, removeSymbolFromView in
+            if removeSymbolFromView {
+                scale = 0.0
+            }
+        }
+        .animation(.bouncy(duration: 0.6), value: scale)
     }
 }

@@ -47,29 +47,103 @@ struct GameView: View {
 
     var body: some View {
         GeometryReader { reader in
-            VStack {
-                ZStack {
-                    topDropableEmojisView()
+            ZStack {
+                if store.level != .gameOver {
+                    NavigationStack {
+                        VStack {
+                            ZStack {
+                                topDropableEmojisView()
 
-                    bottomSelectableEmojisView(reader: reader)
+                                bottomSelectableEmojisView(reader: reader)
+                            }
+                        }
+                        .background(appStyle.color(.surface))
+                        .onAppear {
+                            prefix = Int(reader.size.width / ratio)
+                            prefixPortrait = prefix
+
+                            send(.onAppear)
+                        }
+                        .onReceive(
+                            NotificationCenter.default.publisher(
+                                for: UIDevice.orientationDidChangeNotification
+                            )
+                        ) { _ in
+                            prefix = UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft
+                            ? Int(reader.size.height / ratio)
+                            : prefixPortrait
+                        }
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Text(store.level.rawValue)
+                                    .font(appStyle.font(.small()))
+                                    .fixedSize()
+                            }
+
+                            ToolbarItemGroup {
+                                if store.chances > 0 {
+                                    Image(systemName: "heart.fill")
+                                        .renderingMode(.template)
+                                        .foregroundStyle(appStyle.color(.accent))
+                                }
+
+                                if store.chances > 1 {
+                                    Image(systemName: "heart.fill")
+                                        .renderingMode(.template)
+                                        .foregroundStyle(appStyle.color(.accent))
+                                }
+
+                                if store.chances > 2 {
+                                    Image(systemName: "heart.fill")
+                                        .renderingMode(.template)
+                                        .foregroundStyle(appStyle.color(.accent))
+                                }
+                            }
+
+                            ToolbarSpacer(.fixed)
+
+                            ToolbarItem {
+                                Button {
+                                    send(.showSymbols)
+                                } label: {
+                                    Image(systemName: "lightbulb.max.fill")
+                                        .renderingMode(.template)
+                                        .resizable()
+                                        .foregroundStyle(appStyle.color(.primary))
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    VStack {
+                        Spacer()
+
+                        Text(store.level.rawValue)
+                            .font(appStyle.font(.title(size: 50)))
+                            .foregroundStyle(appStyle.color(.primary))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.horizontal)
+
+                        Spacer()
+                    }
+                }
+
+                if store.secondsElapsed > 0 {
+                    VStack(alignment: .center) {
+                        Spacer()
+
+                        Text("\(store.secondsElapsed)")
+                            .font(appStyle.font(.title(size: 150)))
+                            .foregroundStyle(appStyle.color(.primary))
+
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .background(Color.white.opacity(0.2))
                 }
             }
-            .padding(.horizontal, 16)
-            .onAppear {
-                prefix = Int(reader.size.width / ratio)
-                prefixPortrait = prefix
-
-                send(.onAppear)
-            }
-            .onReceive(
-                NotificationCenter.default.publisher(
-                    for: UIDevice.orientationDidChangeNotification
-                )
-            ) { _ in
-                prefix = UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft
-                ? Int(reader.size.height / ratio)
-                : prefixPortrait
-            }
+            .background(appStyle.color(.surface))
+            .disabled(store.secondsElapsed > 0)
         }
     }
 
@@ -141,13 +215,12 @@ struct GameView: View {
             ScrollView(.horizontal) {
                 if store.showSelectableSymbolsInGame {
                     HStack {
-                        ForEach(store.symbolStates, id: \.id) {
-                            symbolState in
-                            Text(symbolState.expectedEmoji.emoji)
+                        ForEach(store.selectableEmojis, id: \.id) {
+                            emoji in
+                            Text(emoji.emoji)
                                 .font(
                                     appStyle.font(
                                         .title(
-                                            .regular,
                                             size: reader.size.height
                                                 > reader.size.width
                                                 ? reader.size.width * 0.15
@@ -155,12 +228,11 @@ struct GameView: View {
                                         )
                                     )
                                 )
-                                .draggable(symbolState.expectedEmoji) {
-                                    Text(symbolState.expectedEmoji.emoji)
+                                .draggable(emoji) {
+                                    Text(emoji.emoji)
                                         .font(
                                             appStyle.font(
                                                 .title(
-                                                    .regular,
                                                     size: reader.size.height
                                                         > reader.size.width
                                                         ? reader.size.width
@@ -182,6 +254,7 @@ struct GameView: View {
             .padding()
             .frame(minHeight: 50)
             .glassEffect()
+            .padding(.horizontal, 16)
         }
     }
 }

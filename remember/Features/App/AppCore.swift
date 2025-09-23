@@ -11,16 +11,18 @@ import ComposableArchitecture
 struct AppCore {
     @ObservableState
     struct State: Equatable {
+        var startGame = false
+
         var gameState = GameCore.State()
     }
 
     enum Action: ViewAction {
         enum ViewAction {
-            case onAppear
+            case startGame
         }
 
         enum AsyncAction {
-
+            case setStartGame(Bool)
         }
 
         case view(ViewAction)
@@ -37,15 +39,28 @@ struct AppCore {
             switch action {
             case let .view(viewActions):
                 switch viewActions {
-                case .onAppear:
+                case .startGame:
+                    return .send(.async(.setStartGame(true)))
+                }
+
+            case let .async(asyncActions):
+                switch asyncActions {
+                case let .setStartGame(startGame):
+                    state.startGame = startGame
+
                     return .none
                 }
 
-            case .async:
-                return .none
+            case let .gameAction(gameActions):
+                switch gameActions {
+                case .delegate(.returnToHome):
+                    state.startGame = false
 
-            case .gameAction:
-                return .none
+                    return .none
+
+                default:
+                    return .none
+                }
             }
         }
     }

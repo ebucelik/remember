@@ -24,6 +24,9 @@ struct SymbolCore {
             expectedEmoji.emoji == currentEmoji?.emoji ?? ""
         }
 
+        var emojiDidMatch = false
+        var removeSymbolFromView = false
+
         var isEmojiHidden = false
     }
 
@@ -34,12 +37,23 @@ struct SymbolCore {
 
         enum AsyncAction {
             case setEmoji(Emoji?)
+            case showSymbol
             case hideSymbol
+            case setEmojiDidMatch
+            case setRemoveSymbolFromView
+        }
+
+        enum DelegateAction {
+            case emojiMatched(Emoji)
+            case emojiDidNotMatched
         }
 
         case view(ViewAction)
         case async(AsyncAction)
+        case delegate(DelegateAction)
     }
+
+    @Dependency(\.continuousClock) var clock
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -55,13 +69,41 @@ struct SymbolCore {
                 case let .setEmoji(emoji):
                     state.currentEmoji = emoji
 
+                    return state.emojiMatches ? .run { send in
+                        await send(.async(.setEmojiDidMatch))
+
+                        try await self.clock.sleep(for: Duration.seconds(1))
+
+                        await send(.async(.setRemoveSymbolFromView))
+
+                        if let emoji {
+                            await send(.delegate(.emojiMatched(emoji)))
+                        }
+                    } : .send(.delegate(.emojiDidNotMatched))
+
+                case .showSymbol:
+                    state.isEmojiHidden = false
+
                     return .none
 
                 case .hideSymbol:
                     state.isEmojiHidden = true
 
                     return .none
+
+                case .setEmojiDidMatch:
+                    state.emojiDidMatch = true
+
+                    return .none
+
+                case .setRemoveSymbolFromView:
+                    state.removeSymbolFromView = true
+
+                    return .none
                 }
+
+            case .delegate:
+                return .none
             }
         }
     }

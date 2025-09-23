@@ -22,6 +22,7 @@ struct rememberApp: App {
                         AppCore()
                     }
                 )
+                .statusBarHidden()
             }
         }
     }

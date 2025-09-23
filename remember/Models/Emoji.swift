@@ -23,8 +23,12 @@ nonisolated struct Emoji: Hashable, Identifiable, Codable {
 
 extension Emoji: @preconcurrency Transferable {
     static var transferRepresentation: some TransferRepresentation {
-        CodableRepresentation(contentType: .content)
+        CodableRepresentation(contentType: .emoji)
     }
+}
+
+extension UTType {
+    static let emoji = UTType(exportedAs: "com.ebucelik.remember")
 }
 
 #if DEBUG

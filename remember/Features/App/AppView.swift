@@ -19,17 +19,61 @@ struct AppView: View {
         VStack {
             Spacer()
 
-            withDependencies {
-                $0.appStyle = appStyle
-            } operation: {
-                GameView(
-                    store: store.scope(state: \.gameState, action: \.gameAction)
-                )
-            }
+            if store.startGame {
+                withDependencies {
+                    $0.appStyle = appStyle
+                } operation: {
+                    GameView(
+                        store: store.scope(state: \.gameState, action: \.gameAction)
+                    )
+                }
+            } else {
+                Button {
+                    send(.startGame)
+                } label: {
+                    Text("START GAME")
+                        .font(appStyle.font(.title()))
+                        .foregroundStyle(appStyle.color(.primary))
+                        .padding()
+                }
+                .glassEffect()
 
-            Spacer()
+                Text("Highscore: 0")
+                    .font(appStyle.font(.body()))
+                    .foregroundStyle(appStyle.color(.primary))
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 16)
+
+                Spacer()
+
+                HStack {
+                    Button {
+
+                    } label: {
+                        Text("Terms of Use")
+                            .font(appStyle.font(.caption()))
+                            .foregroundStyle(appStyle.color(.primary))
+                            .padding()
+                    }
+                    .glassEffect()
+
+                    Spacer()
+
+                    Button {
+
+                    } label: {
+                        Text("Privacy Policy")
+                            .font(appStyle.font(.caption()))
+                            .foregroundStyle(appStyle.color(.primary))
+                            .padding()
+                    }
+                    .glassEffect()
+                }
+                .padding(.horizontal, 16)
+            }
         }
         .frame(maxWidth: .infinity)
         .background(appStyle.color(.surface))
+        .ignoresSafeArea(edges: .top)
     }
 }
