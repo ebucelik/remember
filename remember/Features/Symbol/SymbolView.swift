@@ -28,8 +28,8 @@ struct SymbolView: View {
                                     .title(
                                         .regular,
                                         size: proxy.size.height > proxy.size.width
-                                        ? proxy.size.width * 0.4
-                                        : proxy.size.height * 0.4
+                                        ? proxy.size.width * 0.5
+                                        : proxy.size.height * 0.5
                                     )
                                 )
                             )
@@ -41,8 +41,8 @@ struct SymbolView: View {
                                     .title(
                                         .regular,
                                         size: proxy.size.height > proxy.size.width
-                                        ? proxy.size.width * 0.4
-                                        : proxy.size.height * 0.4
+                                        ? proxy.size.width * 0.5
+                                        : proxy.size.height * 0.5
                                     )
                                 )
                             )
@@ -55,9 +55,9 @@ struct SymbolView: View {
                                                 .regular,
                                                 size: proxy.size.height > proxy.size.width
                                                     ? proxy.size.width
-                                                        * 0.4
+                                                        * 0.5
                                                     : proxy.size.height
-                                                        * 0.4
+                                                        * 0.5
                                             )
                                         )
                                     )
@@ -68,7 +68,7 @@ struct SymbolView: View {
                 }
             }
         }
-        .scaledToFill()
+        .scaledToFit()
         .frame(maxWidth: .infinity)
         .background(Color(uiColor: store.backgroundColor))
         .clipShape(RoundedRectangle(cornerRadius: 12))

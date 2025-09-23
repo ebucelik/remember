@@ -18,7 +18,7 @@ struct GameCore {
 
         var colorRgbValues: [UIColor] = []
 
-        var symbolSize = 27
+        var symbolSize: Int = 3
 
         var showSelectableSymbolsInGame = false
 
