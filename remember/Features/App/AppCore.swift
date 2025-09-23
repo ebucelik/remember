@@ -40,6 +40,8 @@ struct AppCore {
             case let .view(viewActions):
                 switch viewActions {
                 case .startGame:
+                    state.gameState = GameCore.State()
+                    
                     return .send(.async(.setStartGame(true)))
                 }
 

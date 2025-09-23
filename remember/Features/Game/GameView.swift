@@ -15,14 +15,14 @@ struct GameView: View {
 
     @Dependency(\.appStyle) var appStyle
 
+    @AppStorage("highScore")
+    private var highScore = 0
+
     @State
     private var symbolTargeted: UUID?
 
     @State
     private var prefix = 0
-
-    @State
-    private var prefixPortrait = 0
 
     private var dynamicColumns: [GridItem] {
         var columns = [GridItem]()
@@ -58,21 +58,6 @@ struct GameView: View {
                             }
                         }
                         .background(appStyle.color(.surface))
-                        .onAppear {
-                            prefix = Int(reader.size.width / ratio)
-                            prefixPortrait = prefix
-
-                            send(.onAppear)
-                        }
-                        .onReceive(
-                            NotificationCenter.default.publisher(
-                                for: UIDevice.orientationDidChangeNotification
-                            )
-                        ) { _ in
-                            prefix = UIDevice.current.orientation == .landscapeRight || UIDevice.current.orientation == .landscapeLeft
-                            ? Int(reader.size.height / ratio)
-                            : prefixPortrait
-                        }
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
                                 Text(store.level.rawValue)
@@ -124,7 +109,18 @@ struct GameView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.horizontal)
 
+                        Text("You achieved \(store.score) points.")
+                            .font(appStyle.font(.body()))
+                            .foregroundStyle(appStyle.color(.primary))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.horizontal)
+                            .padding(.top, 16)
+                            .multilineTextAlignment(.center)
+
                         Spacer()
+                    }
+                    .onAppear {
+                        highScore = store.score > highScore ? store.score : highScore
                     }
                 }
 
@@ -139,11 +135,16 @@ struct GameView: View {
                         Spacer()
                     }
                     .frame(maxWidth: .infinity)
-                    .background(Color.white.opacity(0.2))
+                    .background(appStyle.color(.surface).opacity(0.3))
                 }
             }
             .background(appStyle.color(.surface))
             .disabled(store.secondsElapsed > 0)
+            .onAppear {
+                prefix = Int(reader.size.width / ratio)
+
+                send(.onAppear)
+            }
         }
     }
 

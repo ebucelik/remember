@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import UIKit
+import SwiftUI
 
 @Reducer
 struct GameCore {
@@ -28,6 +29,8 @@ struct GameCore {
         var secondsElapsed = 5
 
         var chances = 3
+
+        var score = 0
 
         init() {
             for hexValue in 0x1F001...0x1F9FF {
@@ -162,6 +165,7 @@ struct GameCore {
                 case .evaluateNextLevel:
                     state.level = state.level.nextLevel()
                     state.symbolSize += 2
+                    state.chances = state.chances < 3 ? state.chances + 1 : state.chances
 
                     return .send(.async(.setSymbols(state.symbolSize)))
 
@@ -217,6 +221,8 @@ struct GameCore {
                 case let .delegate(.emojiMatched(emoji)):
                     if let index = state.selectableEmojis.firstIndex(of: emoji) {
                         state.selectableEmojis.remove(at: index)
+
+                        state.score += 1
                     }
 
                     if state.selectableEmojis.isEmpty {

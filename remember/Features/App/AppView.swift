@@ -15,6 +15,9 @@ struct AppView: View {
 
     @Dependency(\.appStyle) var appStyle
 
+    @AppStorage("highScore")
+    private var highScore = 0
+
     var body: some View {
         VStack {
             Spacer()
@@ -38,7 +41,7 @@ struct AppView: View {
                 }
                 .glassEffect()
 
-                Text("Highscore: 0")
+                Text("Highscore: \(highScore)")
                     .font(appStyle.font(.body()))
                     .foregroundStyle(appStyle.color(.primary))
                     .frame(maxWidth: .infinity, alignment: .center)
