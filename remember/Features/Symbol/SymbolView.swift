@@ -34,13 +34,41 @@ struct SymbolView: View {
                                 )
                             )
                             .frame(maxWidth: .infinity)
+                    } else if let currentEmoji = store.currentEmoji {
+                        Text(currentEmoji.emoji)
+                            .font(
+                                appStyle.font(
+                                    .title(
+                                        .regular,
+                                        size: proxy.size.height > proxy.size.width
+                                        ? proxy.size.width * 0.4
+                                        : proxy.size.height * 0.4
+                                    )
+                                )
+                            )
+                            .frame(maxWidth: .infinity)
+                            .draggable(currentEmoji) {
+                                Text(currentEmoji.emoji)
+                                    .font(
+                                        appStyle.font(
+                                            .title(
+                                                .regular,
+                                                size: proxy.size.height > proxy.size.width
+                                                    ? proxy.size.width
+                                                        * 0.4
+                                                    : proxy.size.height
+                                                        * 0.4
+                                            )
+                                        )
+                                    )
+                            }
                     }
 
                     Spacer()
                 }
             }
         }
-        .scaledToFit()
+        .scaledToFill()
         .frame(maxWidth: .infinity)
         .background(Color(uiColor: store.backgroundColor))
         .clipShape(RoundedRectangle(cornerRadius: 12))

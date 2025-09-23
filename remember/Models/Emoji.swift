@@ -5,7 +5,10 @@
 //  Created by Ing. Ebu Bekir Celik, BSc, MSc on 22.09.25.
 //
 
-struct Emoji: Hashable, Identifiable {
+import SwiftUI
+import UniformTypeIdentifiers
+
+nonisolated struct Emoji: Hashable, Identifiable, Codable {
     let id: Int
     let emoji: String
 
@@ -15,6 +18,12 @@ struct Emoji: Hashable, Identifiable {
     ) {
         self.id = id
         self.emoji = emoji
+    }
+}
+
+extension Emoji: @preconcurrency Transferable {
+    static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .content)
     }
 }
 

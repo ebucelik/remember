@@ -16,9 +16,11 @@ struct GameCore {
 
         var symbolStates = IdentifiedArrayOf<SymbolCore.State>()
 
-        var colorHexValues: [Int] = []
+        var colorRgbValues: [UIColor] = []
 
-        var symbolSize = 2
+        var symbolSize = 27
+
+        var showSelectableSymbolsInGame = false
 
         init() {
             for hexValue in 0x1F001...0x1F9FF {
@@ -38,10 +40,20 @@ struct GameCore {
                 }
             }
 
-            for _ in 0...20 {
-                guard let hexValue = (0x000000...0xFFFFFF).randomElement() else { continue }
+            for _ in 0..<50 {
+                guard
+                    let red = (102...217).randomElement(),
+                    let green = (102...217).randomElement(),
+                    let blue = (102...217).randomElement()
+                else { continue }
 
-                colorHexValues.append(hexValue)
+                colorRgbValues.append(
+                    UIColor(
+                        red: red,
+                        green: green,
+                        blue: blue
+                    )
+                )
             }
         }
     }
@@ -54,6 +66,7 @@ struct GameCore {
         enum AsyncAction {
             case setSymbols(Int)
             case hideSymbols
+            case showSelectableSymbolsInGame(Bool)
         }
 
         case view(ViewAction)
@@ -83,7 +96,7 @@ struct GameCore {
 
                     for _ in 0..<size {
                         guard let randomEmoji = state.emojis.randomElement(),
-                              let hexValue = state.colorHexValues.randomElement()
+                              let uiColor = state.colorRgbValues.randomElement()
                         else {
                             continue
                         }
@@ -91,7 +104,7 @@ struct GameCore {
                         symbolStates.append(
                             SymbolCore.State(
                                 expectedEmoji: randomEmoji,
-                                backgroundColor: UIColor(rgb: hexValue)
+                                backgroundColor: uiColor
                             )
                         )
                     }
@@ -104,7 +117,7 @@ struct GameCore {
 
                 case .hideSymbols:
                     return .run { @MainActor [symbolStates = state.symbolStates] send in
-                        try await self.clock.sleep(for: Duration.seconds(2))
+                        try await self.clock.sleep(for: Duration.seconds(3))
 
                         for symbolState in symbolStates {
                             send(
@@ -116,7 +129,14 @@ struct GameCore {
                                 )
                             )
                         }
+
+                        send(.async(.showSelectableSymbolsInGame(true)))
                     }
+
+                case let .showSelectableSymbolsInGame(isShown):
+                    state.showSelectableSymbolsInGame = isShown
+                    
+                    return .none
                 }
 
             case .symbolActions(.element(id: _, action: _)):

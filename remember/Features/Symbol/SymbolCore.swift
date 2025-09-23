@@ -29,11 +29,11 @@ struct SymbolCore {
 
     enum Action: ViewAction {
         enum ViewAction {
-            case setEmoji(Emoji)
+            case setEmoji(Emoji?)
         }
 
         enum AsyncAction {
-            case setEmoji(Emoji)
+            case setEmoji(Emoji?)
             case hideSymbol
         }
 

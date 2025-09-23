@@ -15,41 +15,146 @@ struct GameView: View {
 
     @Dependency(\.appStyle) var appStyle
 
+    @State
+    private var symbolTargeted: UUID?
+
+    @State
+    private var prefix = 6
+
     private var dynamicColumns: [GridItem] {
         var columns = [GridItem]()
 
-        for _ in (0..<store.symbolStates.count).prefix(4) {
+        for _ in (0..<store.symbolStates.count).prefix(prefix) {
             columns.append(GridItem(.flexible()))
         }
 
         return columns
     }
 
+    private let impactSoft = UIImpactFeedbackGenerator(style: .soft)
+    private let impactMedium = UIImpactFeedbackGenerator(style: .medium)
+
     var body: some View {
-        VStack {
-            LazyVGrid(
-                columns: dynamicColumns,
-                alignment: .center,
-                spacing: 15
-            ) {
-                ForEach(
-                    store.scope(
-                        state: \.symbolStates,
-                        action: \.symbolActions
-                    ),
-                    id: \.self
-                ) { symbolStore in
-                    withDependencies {
-                        $0.appStyle = appStyle
-                    } operation: {
-                        SymbolView(store: symbolStore)
+        GeometryReader { reader in
+            VStack {
+                ZStack {
+                    ScrollView {
+                        LazyVGrid(
+                            columns: dynamicColumns,
+                            alignment: .center
+                        ) {
+                            ForEach(
+                                store.scope(
+                                    state: \.symbolStates,
+                                    action: \.symbolActions
+                                ),
+                                id: \.self
+                            ) { symbolStore in
+                                withDependencies {
+                                    $0.appStyle = appStyle
+                                } operation: {
+                                    withAnimation(.easeInOut) {
+                                        SymbolView(store: symbolStore)
+                                            .dropDestination(for: Emoji.self) {
+                                                droppedEmojis,
+                                                _ in
+                                                if let droppedEmoji = droppedEmojis
+                                                    .first
+                                                {
+                                                    symbolStore
+                                                        .send(
+                                                            .view(
+                                                                .setEmoji(droppedEmoji)
+                                                            )
+                                                        )
+
+                                                    impactMedium.impactOccurred()
+                                                }
+
+                                                return true
+                                            } isTargeted: { targeted in
+                                                symbolTargeted =
+                                                    targeted
+                                                    ? symbolStore.state.id : nil
+
+                                                if targeted {
+                                                    impactSoft.impactOccurred()
+                                                }
+                                            }
+                                            .scaleEffect(
+                                                symbolTargeted == symbolStore.state.id
+                                                    ? 1.05 : 1.0
+                                            )
+                                    }
+                                }
+                            }
+                        }
+                        .padding()
+                        .padding(.bottom, 100)
+                    }
+                    .scrollIndicators(.hidden)
+
+                    VStack {
+                        Spacer()
+
+                        ScrollView(.horizontal) {
+                            if store.showSelectableSymbolsInGame {
+                                HStack {
+                                    ForEach(store.symbolStates, id: \.id) {
+                                        symbolState in
+                                        Text(symbolState.expectedEmoji.emoji)
+                                            .font(
+                                                appStyle.font(
+                                                    .title(
+                                                        .regular,
+                                                        size: reader.size.height
+                                                            > reader.size.width
+                                                            ? reader.size.width * 0.15
+                                                            : reader.size.height * 0.15
+                                                    )
+                                                )
+                                            )
+                                            .draggable(symbolState.expectedEmoji) {
+                                                Text(symbolState.expectedEmoji.emoji)
+                                                    .font(
+                                                        appStyle.font(
+                                                            .title(
+                                                                .regular,
+                                                                size: reader.size.height
+                                                                    > reader.size.width
+                                                                    ? reader.size.width
+                                                                        * 0.18
+                                                                    : reader.size.height
+                                                                        * 0.18
+                                                            )
+                                                        )
+                                                    )
+                                                    .onAppear {
+                                                        impactSoft.impactOccurred()
+                                                    }
+                                            }
+                                    }
+                                }
+                            }
+                        }
+                        .scrollIndicators(.hidden)
+                        .padding()
+                        .frame(minHeight: 50)
+                        .glassEffect()
                     }
                 }
             }
-        }
-        .padding(24)
-        .onAppear {
-            send(.onAppear)
+            .padding(.horizontal, 16)
+            .onAppear {
+                send(.onAppear)
+            }
+            .onReceive(
+                NotificationCenter.default.publisher(
+                    for: UIDevice.orientationDidChangeNotification
+                )
+            ) { _ in
+                prefix = UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight ? 12 : 6
+            }
         }
     }
 }
