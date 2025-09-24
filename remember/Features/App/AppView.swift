@@ -5,9 +5,9 @@
 //  Created by Ing. Ebu Bekir Celik, BSc, MSc on 22.09.25.
 //
 
+import AVKit
 import ComposableArchitecture
 import SwiftUI
-import AVKit
 
 @ViewAction(for: AppCore.self)
 struct AppView: View {
@@ -34,28 +34,29 @@ struct AppView: View {
                     $0.appStyle = appStyle
                 } operation: {
                     GameView(
-                        store: store.scope(state: \.gameState, action: \.gameAction)
+                        store: store.scope(
+                            state: \.gameState,
+                            action: \.gameAction
+                        )
                     )
                 }
             } else {
                 Spacer()
 
-                Button {
-                    send(.startGame)
-                } label: {
-                    Text("START GAME")
-                        .font(appStyle.font(.title()))
-                        .foregroundStyle(appStyle.color(.primary))
-                        .padding()
+                withDependencies {
+                    $0.appStyle = appStyle
+                } operation: {
+                    AnimatedButton(title: "START GAME") {
+                        send(.startGame)
+                    }
+                    .padding(.bottom, 100)
                 }
-                .glassEffect()
-                .padding(.bottom, 100)
 
                 Text("Highscore: \(highScore)")
                     .font(appStyle.font(.small()))
                     .foregroundStyle(appStyle.color(.primary))
                     .padding()
-                    .glassEffect()
+                    .glassEffect(.clear)
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 if !levelReached.isEmpty {
@@ -63,34 +64,36 @@ struct AppView: View {
                         .font(appStyle.font(.small()))
                         .foregroundStyle(appStyle.color(.primary))
                         .padding()
-                        .glassEffect()
+                        .glassEffect(.clear)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
 
                 Spacer()
 
                 HStack {
-                    Button {
+                    withDependencies {
+                        $0.appStyle = appStyle
+                    } operation: {
+                        AnimatedButton(
+                            title: "Terms of Use",
+                            font: .caption()
+                        ) {
 
-                    } label: {
-                        Text("Terms of Use")
-                            .font(appStyle.font(.caption()))
-                            .foregroundStyle(appStyle.color(.primary))
-                            .padding()
+                        }
                     }
-                    .glassEffect()
 
                     Spacer()
 
-                    Button {
+                    withDependencies {
+                        $0.appStyle = appStyle
+                    } operation: {
+                        AnimatedButton(
+                            title: "Privacy Policy",
+                            font: .caption()
+                        ) {
 
-                    } label: {
-                        Text("Privacy Policy")
-                            .font(appStyle.font(.caption()))
-                            .foregroundStyle(appStyle.color(.primary))
-                            .padding()
+                        }
                     }
-                    .glassEffect()
                 }
                 .padding(.horizontal, 16)
             }
@@ -104,11 +107,13 @@ struct AppView: View {
         )
         .ignoresSafeArea(edges: .top)
         .onAppear {
-            guard let url = Bundle.main.url(
-                forResource: UIDevice.current.userInterfaceIdiom == .pad
-                ? "backgroundVideoIpad" : "backgroundVideo",
-                withExtension: "mp4"
-            ) else { return }
+            guard
+                let url = Bundle.main.url(
+                    forResource: UIDevice.current.userInterfaceIdiom == .pad
+                        ? "backgroundVideoIpad" : "backgroundVideo",
+                    withExtension: "mp4"
+                )
+            else { return }
 
             player = AVQueuePlayer(url: url)
 

@@ -149,15 +149,13 @@ struct GameView: View {
 
                         Spacer()
 
-                        Button {
-                            send(.returnToHome)
-                        } label: {
-                            Text("Back to Start")
-                                .font(appStyle.font(.title()))
-                                .foregroundStyle(appStyle.color(.primary))
-                                .padding()
+                        withDependencies {
+                            $0.appStyle = appStyle
+                        } operation: {
+                            AnimatedButton(title: "Back to Start") {
+                                send(.returnToHome)
+                            }
                         }
-                        .glassEffect()
                     }
                 }
 
@@ -165,12 +163,11 @@ struct GameView: View {
                     VStack(alignment: .center) {
                         Spacer()
 
-                        Text("\(store.secondsElapsed)")
-                            .font(appStyle.font(.title(size: 150)))
+                        Text("REMEMBER! \(store.secondsElapsed)")
+                            .font(appStyle.font(.title()))
                             .foregroundStyle(appStyle.color(.primary))
+                            .padding(.bottom, 125)
                             .opacity(0.9)
-
-                        Spacer()
                     }
                     .frame(maxWidth: .infinity)
                     .background(appStyle.color(.surface).opacity(0.3))
