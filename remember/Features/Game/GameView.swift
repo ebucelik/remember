@@ -18,8 +18,14 @@ struct GameView: View {
     @AppStorage("highScore")
     private var highScore = 0
 
+    @AppStorage("levelReached")
+    private var levelReached = ""
+
     @State
     private var symbolTargeted: UUID?
+
+    @State
+    private var selectedEmoji: Emoji?
 
     @State
     private var prefix = 0
@@ -59,7 +65,17 @@ struct GameView: View {
                         }
                         .background(appStyle.color(.surface))
                         .toolbar {
-                            ToolbarItem(placement: .topBarLeading) {
+                            ToolbarItemGroup(placement: .topBarLeading) {
+                                Button {
+                                    send(.returnToHome)
+                                } label: {
+                                    Image(systemName: "chevron.backward")
+                                        .renderingMode(.template)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .foregroundStyle(appStyle.color(.primary))
+                                }
+
                                 Text(store.level.rawValue)
                                     .font(appStyle.font(.small()))
                                     .fixedSize()
@@ -109,18 +125,39 @@ struct GameView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.horizontal)
 
-                        Text("You achieved \(store.score) points.")
+                        Text("You achieved \(store.score) points in \(store.levelReached).")
                             .font(appStyle.font(.body()))
                             .foregroundStyle(appStyle.color(.primary))
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.horizontal)
-                            .padding(.top, 16)
+                            .padding(.top, 24)
                             .multilineTextAlignment(.center)
 
+                        if highScore < store.score {
+                            Text("New Highscore: \(store.score)")
+                                .font(appStyle.font(.body()))
+                                .foregroundStyle(appStyle.color(.primary))
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(.horizontal)
+                                .padding(.top, 24)
+                                .multilineTextAlignment(.center)
+                                .onAppear {
+                                    highScore = store.score
+                                    levelReached = store.levelReached
+                                }
+                        }
+
                         Spacer()
-                    }
-                    .onAppear {
-                        highScore = store.score > highScore ? store.score : highScore
+
+                        Button {
+                            send(.returnToHome)
+                        } label: {
+                            Text("Back to Start")
+                                .font(appStyle.font(.title()))
+                                .foregroundStyle(appStyle.color(.primary))
+                                .padding()
+                        }
+                        .glassEffect()
                     }
                 }
 
@@ -131,6 +168,7 @@ struct GameView: View {
                         Text("\(store.secondsElapsed)")
                             .font(appStyle.font(.title(size: 150)))
                             .foregroundStyle(appStyle.color(.primary))
+                            .opacity(0.9)
 
                         Spacer()
                     }

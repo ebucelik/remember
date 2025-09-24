@@ -20,12 +20,15 @@ struct GameCore {
 
         var colorRgbValues: [UIColor] = []
 
-        var symbolSize: Int = 3
+        var symbolSize: Int = 2
 
         var showSelectableSymbolsInGame = false
 
         var level = Level.level1
 
+        var levelReached = ""
+
+        var elapsableSecond = 5
         var secondsElapsed = 5
 
         var chances = 3
@@ -72,6 +75,7 @@ struct GameCore {
         enum ViewAction {
             case onAppear
             case showSymbols
+            case returnToHome
         }
 
         enum AsyncAction {
@@ -127,6 +131,9 @@ struct GameCore {
                     effects.append(.send(.async(.hideSymbols)))
 
                     return .concatenate(effects)
+
+                case .returnToHome:
+                    return .send(.delegate(.returnToHome))
                 }
 
             case .async(let asyncActions):
@@ -164,13 +171,34 @@ struct GameCore {
 
                 case .evaluateNextLevel:
                     state.level = state.level.nextLevel()
-                    state.symbolSize += 2
                     state.chances = state.chances < 3 ? state.chances + 1 : state.chances
+
+                    switch state.level {
+                    case .level5:
+                        state.symbolSize += 2
+                        state.elapsableSecond += 2
+
+                    case .level10:
+                        state.symbolSize += 2
+                        state.elapsableSecond += 2
+
+                    case .level15:
+                        state.symbolSize += 2
+                        state.elapsableSecond += 2
+
+                    case .level20:
+                        state.symbolSize += 2
+                        state.elapsableSecond += 2
+
+                    default:
+                        state.symbolSize += 1
+                        break
+                    }
 
                     return .send(.async(.setSymbols(state.symbolSize)))
 
                 case .hideSymbols:
-                    state.secondsElapsed = 5
+                    state.secondsElapsed = state.elapsableSecond
 
                     return .run { send in
                         for await _ in await self.clock.timer(interval: .seconds(1)) {
@@ -235,13 +263,8 @@ struct GameCore {
                     state.chances -= 1
 
                     if state.chances == 0 {
+                        state.levelReached = state.level.rawValue
                         state.level = Level.gameOver
-
-                        return .run { send in
-                            try await self.clock.sleep(for: .seconds(3))
-
-                            await send(.delegate(.returnToHome))
-                        }
                     }
 
                     return .none
