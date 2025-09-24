@@ -12,6 +12,7 @@
 		714E0CBA2E81302700508306 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 714E0CB92E81302700508306 /* RevenueCat */; };
 		714E0CBC2E81302700508306 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 714E0CBB2E81302700508306 /* RevenueCatUI */; };
 		714E0CBF2E81303E00508306 /* SwiftHelper in Frameworks */ = {isa = PBXBuildFile; productRef = 714E0CBE2E81303E00508306 /* SwiftHelper */; };
+		71DFEC362E846B8500C9B12A /* SSSwiftUIGIFView in Frameworks */ = {isa = PBXBuildFile; productRef = 71DFEC352E846B8500C9B12A /* SSSwiftUIGIFView */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 				714E0CB42E812FE300508306 /* ComposableArchitecture in Frameworks */,
 				714E0CB72E812FFF00508306 /* Lottie in Frameworks */,
 				714E0CBA2E81302700508306 /* RevenueCat in Frameworks */,
+				71DFEC362E846B8500C9B12A /* SSSwiftUIGIFView in Frameworks */,
 				714E0CBF2E81303E00508306 /* SwiftHelper in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -96,6 +98,7 @@
 				714E0CB92E81302700508306 /* RevenueCat */,
 				714E0CBB2E81302700508306 /* RevenueCatUI */,
 				714E0CBE2E81303E00508306 /* SwiftHelper */,
+				71DFEC352E846B8500C9B12A /* SSSwiftUIGIFView */,
 			);
 			productName = remember;
 			productReference = 714E0CA42E812FA400508306 /* remember.app */;
@@ -130,6 +133,7 @@
 				714E0CB52E812FFF00508306 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				714E0CB82E81302700508306 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
 				714E0CBD2E81303E00508306 /* XCRemoteSwiftPackageReference "SwiftHelper" */,
+				71DFEC342E846B8500C9B12A /* XCRemoteSwiftPackageReference "SSSwiftUIGIFView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 714E0CA52E812FA400508306 /* Products */;
@@ -413,6 +417,14 @@
 				kind = branch;
 			};
 		};
+		71DFEC342E846B8500C9B12A /* XCRemoteSwiftPackageReference "SSSwiftUIGIFView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimformSolutionsPvtLtd/SSSwiftUIGIFView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -440,6 +452,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 714E0CBD2E81303E00508306 /* XCRemoteSwiftPackageReference "SwiftHelper" */;
 			productName = SwiftHelper;
+		};
+		71DFEC352E846B8500C9B12A /* SSSwiftUIGIFView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 71DFEC342E846B8500C9B12A /* XCRemoteSwiftPackageReference "SSSwiftUIGIFView" */;
+			productName = SSSwiftUIGIFView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

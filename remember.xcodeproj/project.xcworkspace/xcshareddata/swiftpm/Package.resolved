@@ -1,5 +1,5 @@
 {
-  "originHash" : "1f2a2931d8a3673974ab33aa182be75e64e0e2ec3bc5624aed15595b5703a5fe",
+  "originHash" : "d96b866d784ad5ffc0bce61a57434b9ab4441e5ff2d3af23bd0917e0ac587d1d",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "02614406b9661ac7ca10e0b873ab0062ed5ae844",
         "version" : "5.39.3"
+      }
+    },
+    {
+      "identity" : "ssswiftuigifview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimformSolutionsPvtLtd/SSSwiftUIGIFView",
+      "state" : {
+        "revision" : "bd16555ae068ec4c01f9bdb913526caa08eb30b1",
+        "version" : "2.0.0"
       }
     },
     {

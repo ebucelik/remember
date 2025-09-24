@@ -69,17 +69,23 @@ struct SymbolCore {
                 case let .setEmoji(emoji):
                     state.currentEmoji = emoji
 
-                    return state.emojiMatches ? .run { send in
-                        await send(.async(.setEmojiDidMatch))
+                    if state.emojiMatches {
+                        return .run { send in
+                            await send(.async(.setEmojiDidMatch))
 
-                        try await self.clock.sleep(for: Duration.seconds(1))
+                            try await self.clock.sleep(for: Duration.seconds(1))
 
-                        await send(.async(.setRemoveSymbolFromView))
+                            await send(.async(.setRemoveSymbolFromView))
 
-                        if let emoji {
-                            await send(.delegate(.emojiMatched(emoji)))
+                            if let emoji {
+                                await send(.delegate(.emojiMatched(emoji)))
+                            }
                         }
-                    } : .send(.delegate(.emojiDidNotMatched))
+                    }
+
+                    state.currentEmoji = nil
+
+                    return .send(.delegate(.emojiDidNotMatched))
 
                 case .showSymbol:
                     state.isEmojiHidden = false

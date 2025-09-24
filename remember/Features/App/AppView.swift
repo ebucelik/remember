@@ -8,6 +8,7 @@
 import AVKit
 import ComposableArchitecture
 import SwiftUI
+import SSSwiftUIGIFView
 
 @ViewAction(for: AppCore.self)
 struct AppView: View {
@@ -26,6 +27,8 @@ struct AppView: View {
     private var looper: AVPlayerLooper?
     @State
     private var player: AVQueuePlayer?
+
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     var body: some View {
         VStack {
@@ -96,37 +99,26 @@ struct AppView: View {
                     }
                 }
                 .padding(.horizontal, 16)
+                .padding(.bottom, 24)
             }
         }
         .frame(maxWidth: .infinity)
-        .background(
-            VideoPlayer(player: player)
-                .ignoresSafeArea()
-                .aspectRatio(16 / 9, contentMode: .fill)
-                .disabled(true)
-        )
+        .background(getBackground())
         .ignoresSafeArea(edges: .top)
-        .onAppear {
-            guard
-                let url = Bundle.main.url(
-                    forResource: UIDevice.current.userInterfaceIdiom == .pad
-                        ? "backgroundVideoIpad" : "backgroundVideo",
-                    withExtension: "mp4"
-                )
-            else { return }
+    }
 
-            player = AVQueuePlayer(url: url)
+    @ViewBuilder
+    private func getBackground() -> some View {
+        let mode = colorScheme == .dark ? "Dark" : ""
 
-            guard let player else { return }
-
-            looper = AVPlayerLooper(
-                player: player,
-                templateItem: AVPlayerItem(
-                    url: url
-                )
-            )
-
-            player.play()
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            SwiftUIGIFPlayerView(gifName: "backgroundVideoIpad\(mode)")
+                .aspectRatio(contentMode: .fill)
+                .ignoresSafeArea()
+        } else {
+            SwiftUIGIFPlayerView(gifName: "backgroundVideo\(mode)")
+                .ignoresSafeArea()
+                .scaleEffect(1.2)
         }
     }
 }

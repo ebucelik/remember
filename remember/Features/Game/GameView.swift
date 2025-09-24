@@ -41,15 +41,17 @@ struct GameView: View {
     }
 
     private var ratio: Double {
-        let estimatedSymbolSize = (Double(store.symbolSize) * 1.5) > 70
-        ? 70
-        : (Double(store.symbolSize) * 1.5)
+        let estimatedSymbolSize =
+            (Double(store.symbolSize) * 1.5) > 70
+            ? 70
+            : (Double(store.symbolSize) * 1.5)
 
         return 125 - estimatedSymbolSize
     }
 
     private let impactSoft = UIImpactFeedbackGenerator(style: .soft)
     private let impactMedium = UIImpactFeedbackGenerator(style: .medium)
+    private let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
 
     var body: some View {
         GeometryReader { reader in
@@ -73,7 +75,9 @@ struct GameView: View {
                                         .renderingMode(.template)
                                         .resizable()
                                         .scaledToFit()
-                                        .foregroundStyle(appStyle.color(.primary))
+                                        .foregroundStyle(
+                                            appStyle.color(.primary)
+                                        )
                                 }
 
                                 Text(store.level.rawValue)
@@ -85,19 +89,25 @@ struct GameView: View {
                                 if store.chances > 0 {
                                     Image(systemName: "heart.fill")
                                         .renderingMode(.template)
-                                        .foregroundStyle(appStyle.color(.accent))
+                                        .foregroundStyle(
+                                            appStyle.color(.accent)
+                                        )
                                 }
 
                                 if store.chances > 1 {
                                     Image(systemName: "heart.fill")
                                         .renderingMode(.template)
-                                        .foregroundStyle(appStyle.color(.accent))
+                                        .foregroundStyle(
+                                            appStyle.color(.accent)
+                                        )
                                 }
 
                                 if store.chances > 2 {
                                     Image(systemName: "heart.fill")
                                         .renderingMode(.template)
-                                        .foregroundStyle(appStyle.color(.accent))
+                                        .foregroundStyle(
+                                            appStyle.color(.accent)
+                                        )
                                 }
                             }
 
@@ -110,7 +120,9 @@ struct GameView: View {
                                     Image(systemName: "lightbulb.max.fill")
                                         .renderingMode(.template)
                                         .resizable()
-                                        .foregroundStyle(appStyle.color(.primary))
+                                        .foregroundStyle(
+                                            appStyle.color(.primary)
+                                        )
                                 }
                             }
                         }
@@ -125,13 +137,15 @@ struct GameView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.horizontal)
 
-                        Text("You achieved \(store.score) points in \(store.levelReached).")
-                            .font(appStyle.font(.body()))
-                            .foregroundStyle(appStyle.color(.primary))
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.horizontal)
-                            .padding(.top, 24)
-                            .multilineTextAlignment(.center)
+                        Text(
+                            "You achieved \(store.score) points in \(store.levelReached)."
+                        )
+                        .font(appStyle.font(.body()))
+                        .foregroundStyle(appStyle.color(.primary))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.horizontal)
+                        .padding(.top, 24)
+                        .multilineTextAlignment(.center)
 
                         if highScore < store.score {
                             Text("New Highscore: \(store.score)")
@@ -179,6 +193,11 @@ struct GameView: View {
                 prefix = Int(reader.size.width / ratio)
 
                 send(.onAppear)
+            }
+            .onChange(of: store.chances) { oldChances, newChances in
+                if oldChances > newChances {
+                    impactHeavy.impactOccurred()
+                }
             }
         }
     }
@@ -232,7 +251,10 @@ struct GameView: View {
                                     symbolTargeted == symbolStore.state.id
                                         ? 1.02 : 1.0
                                 )
-                                .opacity(symbolTargeted == symbolStore.state.id ? 0.8 : 1.0)
+                                .opacity(
+                                    symbolTargeted == symbolStore.state.id
+                                        ? 0.8 : 1.0
+                                )
                         }
                     }
                 }
@@ -248,8 +270,8 @@ struct GameView: View {
         VStack {
             Spacer()
 
-            ScrollView(.horizontal) {
-                if store.showSelectableSymbolsInGame {
+            if store.showSelectableSymbolsInGame {
+                ScrollView(.horizontal) {
                     HStack {
                         ForEach(store.selectableEmojis, id: \.id) {
                             emoji in
@@ -285,12 +307,11 @@ struct GameView: View {
                         }
                     }
                 }
+                .scrollIndicators(.hidden)
+                .padding()
+                .glassEffect()
+                .padding(.horizontal, 8)
             }
-            .scrollIndicators(.hidden)
-            .padding()
-            .frame(minHeight: 50)
-            .glassEffect()
-            .padding(.horizontal, 16)
         }
     }
 }
