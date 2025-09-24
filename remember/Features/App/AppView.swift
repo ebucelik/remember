@@ -28,85 +28,85 @@ struct AppView: View {
     private var player: AVQueuePlayer?
 
     var body: some View {
-        ZStack {
-            VideoPlayer(player: player)
-                .ignoresSafeArea()
-                .frame(maxWidth: .infinity)
-                .disabled(true)
+        VStack {
+            if store.startGame {
+                withDependencies {
+                    $0.appStyle = appStyle
+                } operation: {
+                    GameView(
+                        store: store.scope(state: \.gameState, action: \.gameAction)
+                    )
+                }
+            } else {
+                Spacer()
 
-            VStack {
-                if store.startGame {
-                    withDependencies {
-                        $0.appStyle = appStyle
-                    } operation: {
-                        GameView(
-                            store: store.scope(state: \.gameState, action: \.gameAction)
-                        )
-                    }
-                } else {
-                    Spacer()
-                    
-                    Button {
-                        send(.startGame)
-                    } label: {
-                        Text("START GAME")
-                            .font(appStyle.font(.title()))
-                            .foregroundStyle(appStyle.color(.primary))
-                            .padding()
-                    }
+                Button {
+                    send(.startGame)
+                } label: {
+                    Text("START GAME")
+                        .font(appStyle.font(.title()))
+                        .foregroundStyle(appStyle.color(.primary))
+                        .padding()
+                }
+                .glassEffect()
+                .padding(.bottom, 100)
+
+                Text("Highscore: \(highScore)")
+                    .font(appStyle.font(.small()))
+                    .foregroundStyle(appStyle.color(.primary))
+                    .padding()
                     .glassEffect()
-                    .padding(.bottom, 100)
+                    .frame(maxWidth: .infinity, alignment: .center)
 
-                    Text("Highscore: \(highScore)")
+                if !levelReached.isEmpty {
+                    Text("Best Level: \(levelReached)")
                         .font(appStyle.font(.small()))
                         .foregroundStyle(appStyle.color(.primary))
                         .padding()
                         .glassEffect()
                         .frame(maxWidth: .infinity, alignment: .center)
+                }
 
-                    if !levelReached.isEmpty {
-                        Text("Best Level: \(levelReached)")
-                            .font(appStyle.font(.small()))
+                Spacer()
+
+                HStack {
+                    Button {
+
+                    } label: {
+                        Text("Terms of Use")
+                            .font(appStyle.font(.caption()))
                             .foregroundStyle(appStyle.color(.primary))
                             .padding()
-                            .glassEffect()
-                            .frame(maxWidth: .infinity, alignment: .center)
                     }
+                    .glassEffect()
 
                     Spacer()
 
-                    HStack {
-                        Button {
+                    Button {
 
-                        } label: {
-                            Text("Terms of Use")
-                                .font(appStyle.font(.caption()))
-                                .foregroundStyle(appStyle.color(.primary))
-                                .padding()
-                        }
-                        .glassEffect()
-
-                        Spacer()
-
-                        Button {
-
-                        } label: {
-                            Text("Privacy Policy")
-                                .font(appStyle.font(.caption()))
-                                .foregroundStyle(appStyle.color(.primary))
-                                .padding()
-                        }
-                        .glassEffect()
+                    } label: {
+                        Text("Privacy Policy")
+                            .font(appStyle.font(.caption()))
+                            .foregroundStyle(appStyle.color(.primary))
+                            .padding()
                     }
-                    .padding(.horizontal, 16)
+                    .glassEffect()
                 }
+                .padding(.horizontal, 16)
             }
-            .frame(maxWidth: .infinity)
         }
+        .frame(maxWidth: .infinity)
+        .background(
+            VideoPlayer(player: player)
+                .ignoresSafeArea()
+                .aspectRatio(16 / 9, contentMode: .fill)
+                .disabled(true)
+        )
         .ignoresSafeArea(edges: .top)
         .onAppear {
             guard let url = Bundle.main.url(
-                forResource: "backgroundVideo",
+                forResource: UIDevice.current.userInterfaceIdiom == .pad
+                ? "backgroundVideoIpad" : "backgroundVideo",
                 withExtension: "mp4"
             ) else { return }
 
