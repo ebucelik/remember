@@ -12,17 +12,20 @@ struct AnimatedButton: View {
 
     let title: String
     let font: AppFont
+    let fontColor: Color?
     let glassEffect: Glass
     let action: () -> Void
 
     init(
         title: String,
         font: AppFont = .title(),
+        fontColor: Color? = nil,
         glassEffect: Glass = .clear,
         action: @escaping () -> Void
     ) {
         self.title = title
         self.font = font
+        self.fontColor = fontColor
         self.glassEffect = glassEffect
         self.action = action
     }
@@ -50,7 +53,7 @@ struct AnimatedButton: View {
         } label: {
             Text(title)
                 .font(appStyle.font(font))
-                .foregroundStyle(appStyle.color(.primary))
+                .foregroundStyle(fontColor ?? appStyle.color(.surfaceInverse))
                 .padding()
         }
         .glassEffect(glassEffect)

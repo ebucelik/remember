@@ -63,7 +63,7 @@ struct AppView: View {
 
                 Text("Highscore: \(highScore)")
                     .font(appStyle.font(.small()))
-                    .foregroundStyle(appStyle.color(.primary))
+                    .foregroundStyle(appStyle.color(.surfaceInverse))
                     .padding()
                     .glassEffect(.clear)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -71,7 +71,7 @@ struct AppView: View {
                 if !levelReached.isEmpty {
                     Text("Best Level: \(levelReached)")
                         .font(appStyle.font(.small()))
-                        .foregroundStyle(appStyle.color(.primary))
+                        .foregroundStyle(appStyle.color(.surfaceInverse))
                         .padding()
                         .glassEffect(.clear)
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -112,12 +112,10 @@ struct AppView: View {
         .background(getBackground())
         .ignoresSafeArea(edges: .top)
         .onAppear {
-//            if !isOnboardingShown {
-//                showOnboarding = true
-//                isOnboardingShown = true
-//            }
-
-            showOnboarding = true
+            if !isOnboardingShown {
+                showOnboarding = true
+                isOnboardingShown = true
+            }
         }
         .sheet(isPresented: $showOnboarding) {
             withDependencies {

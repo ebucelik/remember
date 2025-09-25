@@ -46,7 +46,10 @@ struct OnboardingView: View {
             withDependencies {
                 $0.appStyle = appStyle
             } operation: {
-                AnimatedButton(title: "START") {
+                AnimatedButton(
+                    title: "UNDERSTOOD",
+                    fontColor: appStyle.color(.surfaceInverse)
+                ) {
                     dismiss()
                 }
                 .buttonStyle(.glassProminent)
