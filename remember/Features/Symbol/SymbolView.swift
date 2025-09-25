@@ -36,18 +36,37 @@ struct SymbolView: View {
                                 )
                             )
                             .frame(maxWidth: .infinity)
-                    } else if let currentEmoji = store.currentEmoji {
-                        Text(currentEmoji.emoji)
-                            .font(
-                                appStyle.font(
-                                    .title(
-                                        size: proxy.size.height > proxy.size.width
+                    } else if store.currentEmoji != nil {
+                        HStack {
+                            Spacer()
+
+                            ZStack {
+                                Circle()
+                                    .fill(appStyle.color(.success))
+                                    .frame(
+                                        width: proxy.size.height > proxy.size.width
+                                        ? proxy.size.width * 0.5
+                                        : proxy.size.height * 0.5,
+                                        height: proxy.size.height > proxy.size.width
                                         ? proxy.size.width * 0.5
                                         : proxy.size.height * 0.5
                                     )
-                                )
-                            )
-                            .frame(maxWidth: .infinity)
+
+                                Text("+1")
+                                    .font(
+                                        appStyle.font(
+                                            .title(
+                                                size: proxy.size.height > proxy.size.width
+                                                ? proxy.size.width * 0.4
+                                                : proxy.size.height * 0.4
+                                            )
+                                        )
+                                    )
+                                    .foregroundStyle(appStyle.color(.surface))
+                            }
+
+                            Spacer()
+                        }
                     }
 
                     Spacer()
@@ -63,9 +82,9 @@ struct SymbolView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(
                     store.emojiDidMatch ?
-                    appStyle.color(.surface) :
-                    appStyle.color(.primary)
-                    , lineWidth: 3.5)
+                    appStyle.color(.success) :
+                    appStyle.color(.primary),
+                    lineWidth: 3.5)
         }
         .scaleEffect(scale)
         .onAppear {

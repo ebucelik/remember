@@ -17,6 +17,7 @@ public enum AppColor {
     case disabled
     case clear
     case accent
+    case success
 }
 
 public enum AppFont {
@@ -55,6 +56,8 @@ public class AppStyle: AppStyleProtocol {
             return Color.clear
         case .accent:
             return Color("Accent")
+        case .success:
+            return Color("Success")
         }
     }
 
