@@ -28,6 +28,7 @@ struct SymbolCore {
         var removeSymbolFromView = false
 
         var isEmojiHidden = false
+        var showErrorEmoji = false
     }
 
     enum Action: ViewAction {
@@ -41,6 +42,7 @@ struct SymbolCore {
             case hideSymbol
             case setEmojiDidMatch
             case setRemoveSymbolFromView
+            case setShowErrorEmoji(Bool)
         }
 
         enum DelegateAction {
@@ -85,7 +87,15 @@ struct SymbolCore {
 
                     state.currentEmoji = nil
 
-                    return .send(.delegate(.emojiDidNotMatched))
+                    return .run { send in
+                        await send(.async(.setShowErrorEmoji(true)))
+
+                        try await self.clock.sleep(for: .seconds(1))
+
+                        await send(.async(.setShowErrorEmoji(false)))
+
+                        await send(.delegate(.emojiDidNotMatched))
+                    }
 
                 case .showSymbol:
                     state.isEmojiHidden = false
@@ -104,6 +114,11 @@ struct SymbolCore {
 
                 case .setRemoveSymbolFromView:
                     state.removeSymbolFromView = true
+
+                    return .none
+
+                case let .setShowErrorEmoji(show):
+                    state.showErrorEmoji = show
 
                     return .none
                 }

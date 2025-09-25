@@ -67,6 +67,38 @@ struct SymbolView: View {
 
                             Spacer()
                         }
+                    } else if store.showErrorEmoji {
+                        HStack {
+                            Spacer()
+
+                            ZStack {
+                                Circle()
+                                    .fill(Color.white)
+                                    .frame(
+                                        width: proxy.size.height > proxy.size.width
+                                        ? proxy.size.width * 0.3
+                                        : proxy.size.height * 0.3,
+                                        height: proxy.size.height > proxy.size.width
+                                        ? proxy.size.width * 0.3
+                                        : proxy.size.height * 0.3
+                                    )
+
+                                Image(systemName: "xmark.circle.fill")
+                                    .renderingMode(.template)
+                                    .resizable()
+                                    .frame(
+                                        width: proxy.size.height > proxy.size.width
+                                        ? proxy.size.width * 0.5
+                                        : proxy.size.height * 0.5,
+                                        height: proxy.size.height > proxy.size.width
+                                        ? proxy.size.width * 0.5
+                                        : proxy.size.height * 0.5
+                                    )
+                                    .foregroundStyle(appStyle.color(.accent))
+                            }
+
+                            Spacer()
+                        }
                     }
 
                     Spacer()
@@ -81,9 +113,11 @@ struct SymbolView: View {
         .overlay {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(
-                    store.emojiDidMatch ?
-                    appStyle.color(.success) :
-                    appStyle.color(.primary),
+                    store.emojiDidMatch
+                    ? appStyle.color(.success)
+                    : store.showErrorEmoji
+                    ? appStyle.color(.accent)
+                    : appStyle.color(.primary),
                     lineWidth: 3.5)
         }
         .scaleEffect(scale)

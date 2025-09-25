@@ -20,11 +20,11 @@ struct GameCore {
 
         var colorRgbValues: [UIColor] = []
 
-        var symbolSize: Int = 2
+        var symbolSize: Int = 9
 
         var showSelectableSymbolsInGame = false
 
-        var level = Level.level1
+        var level = Level.level6
 
         var levelReached = ""
 

@@ -28,6 +28,12 @@ struct AppView: View {
     @State
     private var player: AVQueuePlayer?
 
+    @AppStorage("isOnboardingShown")
+    var isOnboardingShown: Bool = false
+
+    @State
+    var showOnboarding = false
+
     @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     var body: some View {
@@ -105,6 +111,24 @@ struct AppView: View {
         .frame(maxWidth: .infinity)
         .background(getBackground())
         .ignoresSafeArea(edges: .top)
+        .onAppear {
+//            if !isOnboardingShown {
+//                showOnboarding = true
+//                isOnboardingShown = true
+//            }
+
+            showOnboarding = true
+        }
+        .sheet(isPresented: $showOnboarding) {
+            withDependencies {
+                $0.appStyle = appStyle
+            } operation: {
+                OnboardingView()
+//                    .onDisappear {
+//                        showRevenueCatUI = true
+//                    }
+            }
+        }
     }
 
     @ViewBuilder
