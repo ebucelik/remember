@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import UIKit
 import SwiftUI
+import Algorithms
 
 @Reducer
 struct GameCore {
@@ -47,6 +48,7 @@ struct GameCore {
                     emojis.updateOrAppend(
                         Emoji(
                             id: hexValue,
+                            hex: hexValue,
                             emoji: emoji
                         )
                     )
@@ -164,7 +166,13 @@ struct GameCore {
                         uniqueElements: symbolStates
                     )
 
-                    state.selectableEmojis = state.symbolStates.map { $0.expectedEmoji }
+                    state.selectableEmojis = state.symbolStates.map {
+                        Emoji(
+                            id: Int(UUID().uuid.0),
+                            hex: $0.expectedEmoji.hex,
+                            emoji: $0.expectedEmoji.emoji
+                        )
+                    }
                     state.selectableEmojis.shuffle()
 
                     return .send(.async(.hideSymbols))

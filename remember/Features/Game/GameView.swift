@@ -40,6 +40,17 @@ struct GameView: View {
         return columns
     }
 
+    private var dynamicRows: [GridItem] {
+        let numOfRows = Int((CGFloat(store.selectableEmojis.count) / 6.0).rounded(.up))
+        var rows = [GridItem]()
+
+        for _ in (0..<numOfRows) {
+            rows.append(GridItem(.flexible()))
+        }
+
+        return rows
+    }
+
     private var ratio: Double {
         let estimatedSymbolSize =
             (Double(store.symbolSize) * 1.5) > 70
@@ -271,43 +282,44 @@ struct GameView: View {
             Spacer()
 
             if store.showSelectableSymbolsInGame {
-                ScrollView(.horizontal) {
-                    HStack {
-                        ForEach(store.selectableEmojis, id: \.id) {
-                            emoji in
-                            Text(emoji.emoji)
-                                .font(
-                                    appStyle.font(
-                                        .title(
-                                            size: reader.size.height
-                                                > reader.size.width
-                                                ? reader.size.width * 0.15
-                                                : reader.size.height * 0.15
-                                        )
+                LazyHGrid(rows: dynamicRows) {
+                    ForEach(store.selectableEmojis, id: \.id) {
+                        emoji in
+                        Text(emoji.emoji)
+                            .minimumScaleFactor(0.1)
+                            .font(
+                                appStyle.font(
+                                    .title(
+                                        size: reader.size.height
+                                        > reader.size.width
+                                        ? reader.size.width
+                                            * 0.15
+                                        : reader.size.height
+                                            * 0.15
                                     )
                                 )
-                                .draggable(emoji) {
-                                    Text(emoji.emoji)
-                                        .font(
-                                            appStyle.font(
-                                                .title(
-                                                    size: reader.size.height
-                                                        > reader.size.width
-                                                        ? reader.size.width
-                                                            * 0.18
-                                                        : reader.size.height
-                                                            * 0.18
-                                                )
+                            )
+                            .draggable(emoji) {
+                                Text(emoji.emoji)
+                                    .font(
+                                        appStyle.font(
+                                            .title(
+                                                size: reader.size.height
+                                                    > reader.size.width
+                                                    ? reader.size.width
+                                                        * 0.18
+                                                    : reader.size.height
+                                                        * 0.18
                                             )
                                         )
-                                        .onAppear {
-                                            impactSoft.impactOccurred()
-                                        }
-                                }
-                        }
+                                    )
+                                    .onAppear {
+                                        impactSoft.impactOccurred()
+                                    }
+                            }
                     }
                 }
-                .scrollIndicators(.hidden)
+                .frame(maxWidth: .infinity, maxHeight: 100)
                 .padding()
                 .glassEffect()
                 .padding(.horizontal, 8)

@@ -79,6 +79,17 @@ struct AppView: View {
 
                 Spacer()
 
+                withDependencies {
+                    $0.appStyle = appStyle
+                } operation: {
+                    AnimatedButton(
+                        title: "How To Play",
+                        font: .caption()
+                    ) {
+                        showOnboarding.toggle()
+                    }
+                }
+
                 HStack {
                     withDependencies {
                         $0.appStyle = appStyle

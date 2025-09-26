@@ -10,13 +10,16 @@ import UniformTypeIdentifiers
 
 nonisolated struct Emoji: Hashable, Identifiable, Codable {
     let id: Int
+    let hex: Int
     let emoji: String
 
     init(
         id: Int,
+        hex: Int,
         emoji: String
     ) {
         self.id = id
+        self.hex = hex
         self.emoji = emoji
     }
 }
@@ -35,6 +38,7 @@ extension UTType {
 extension Emoji {
     static let mock = Emoji(
         id: 0x1F004,
+        hex: 0x1F004,
         emoji: String(UnicodeScalar(0x1F004)!)
     )
 }

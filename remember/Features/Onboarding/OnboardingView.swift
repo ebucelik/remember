@@ -33,8 +33,13 @@ struct OnboardingView: View {
 
                         Spacer()
 
-                        SwiftUIGIFPlayerView(gifName: "\(page.gif)\(colorScheme == .dark ? "Dark" : "")")
-                            .aspectRatio(0.45, contentMode: .fit)
+                        SwiftUIGIFPlayerView(
+                            gifURL: colorScheme == .dark ? page.urlDark : page.url,
+                            isShowProgressView: true
+                        )
+                        .aspectRatio(0.45, contentMode: .fit)
+
+                        Spacer()
                     }
                     .padding(.horizontal, 16)
                     .padding(.top, 24)
