@@ -7,9 +7,12 @@
 
 import ComposableArchitecture
 import SwiftUI
+import GoogleMobileAds
 
 @main
 struct rememberApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var body: some Scene {
         WindowGroup {
             withDependencies {
@@ -25,5 +28,20 @@ struct rememberApp: App {
                 .statusBarHidden()
             }
         }
+    }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+
+        Task {
+            await MobileAds.shared.start()
+        }
+
+//#if DEBUG
+//        Purchases.logLevel = .debug
+//#endif
+//        Purchases.configure(withAPIKey: "appl_iHwjQQYeFvTDpyFlSsDvHkVvJVj")
+        return true
     }
 }

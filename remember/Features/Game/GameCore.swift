@@ -36,6 +36,9 @@ struct GameCore {
 
         var score = 0
 
+        var isEntitled = false
+        var showAd = false
+
         init() {
             for hexValue in 0x1F001...0x1F9FF {
                 guard let scalar = UnicodeScalar(hexValue) else {
@@ -73,11 +76,13 @@ struct GameCore {
         }
     }
 
-    enum Action: ViewAction {
+    enum Action: ViewAction, BindableAction {
         enum ViewAction {
             case onAppear
+            case checkEntitlement
             case showSymbols
             case returnToHome
+            case resetShowAd
         }
 
         enum AsyncAction {
@@ -96,6 +101,7 @@ struct GameCore {
         case async(AsyncAction)
         case delegate(DelegateAction)
         case symbolActions(IdentifiedActionOf<SymbolCore>)
+        case binding(BindingAction<State>)
     }
 
     @Dependency(\.continuousClock) var clock
@@ -103,6 +109,8 @@ struct GameCore {
     private nonisolated enum CancelID: Hashable { case timer }
 
     var body: some Reducer<State, Action> {
+        BindingReducer()
+
         Reduce {
             state,
             action in
@@ -113,6 +121,15 @@ struct GameCore {
                     guard state.symbolStates.count != state.symbolSize else { return .none }
 
                     return .send(.async(.setSymbols(state.symbolSize)))
+
+                case .checkEntitlement:
+                    if state.isEntitled {
+                        return .send(.view(.showSymbols))
+                    }
+
+                    state.showAd = true
+
+                    return .none
 
                 case .showSymbols:
                     var effects: [Effect<Action>] = []
@@ -136,6 +153,11 @@ struct GameCore {
 
                 case .returnToHome:
                     return .send(.delegate(.returnToHome))
+
+                case .resetShowAd:
+                    state.showAd = false
+
+                    return .none
                 }
 
             case .async(let asyncActions):
@@ -280,6 +302,9 @@ struct GameCore {
                 default:
                     return .none
                 }
+
+            case .binding:
+                return .none
             }
         }
         .forEach(\.symbolStates, action: \.symbolActions) {

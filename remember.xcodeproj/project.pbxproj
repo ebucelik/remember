@@ -13,6 +13,7 @@
 		714E0CBC2E81302700508306 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 714E0CBB2E81302700508306 /* RevenueCatUI */; };
 		714E0CBF2E81303E00508306 /* SwiftHelper in Frameworks */ = {isa = PBXBuildFile; productRef = 714E0CBE2E81303E00508306 /* SwiftHelper */; };
 		71CA892F2E866EBB00287440 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 71CA892E2E866EBB00287440 /* Algorithms */; };
+		71CA89322E86B7B900287440 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 71CA89312E86B7B900287440 /* GoogleMobileAds */; };
 		71DFEC362E846B8500C9B12A /* SSSwiftUIGIFView in Frameworks */ = {isa = PBXBuildFile; productRef = 71DFEC352E846B8500C9B12A /* SSSwiftUIGIFView */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,7 @@
 				71CA892F2E866EBB00287440 /* Algorithms in Frameworks */,
 				714E0CB42E812FE300508306 /* ComposableArchitecture in Frameworks */,
 				714E0CB72E812FFF00508306 /* Lottie in Frameworks */,
+				71CA89322E86B7B900287440 /* GoogleMobileAds in Frameworks */,
 				714E0CBA2E81302700508306 /* RevenueCat in Frameworks */,
 				71DFEC362E846B8500C9B12A /* SSSwiftUIGIFView in Frameworks */,
 				714E0CBF2E81303E00508306 /* SwiftHelper in Frameworks */,
@@ -102,6 +104,7 @@
 				714E0CBE2E81303E00508306 /* SwiftHelper */,
 				71DFEC352E846B8500C9B12A /* SSSwiftUIGIFView */,
 				71CA892E2E866EBB00287440 /* Algorithms */,
+				71CA89312E86B7B900287440 /* GoogleMobileAds */,
 			);
 			productName = remember;
 			productReference = 714E0CA42E812FA400508306 /* remember.app */;
@@ -138,6 +141,7 @@
 				714E0CBD2E81303E00508306 /* XCRemoteSwiftPackageReference "SwiftHelper" */,
 				71DFEC342E846B8500C9B12A /* XCRemoteSwiftPackageReference "SSSwiftUIGIFView" */,
 				71CA892D2E866EBB00287440 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				71CA89302E86B7B900287440 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 714E0CA52E812FA400508306 /* Products */;
@@ -439,6 +443,14 @@
 				minimumVersion = 1.2.1;
 			};
 		};
+		71CA89302E86B7B900287440 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.11.0;
+			};
+		};
 		71DFEC342E846B8500C9B12A /* XCRemoteSwiftPackageReference "SSSwiftUIGIFView" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SimformSolutionsPvtLtd/SSSwiftUIGIFView";
@@ -479,6 +491,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 71CA892D2E866EBB00287440 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
+		};
+		71CA89312E86B7B900287440 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 71CA89302E86B7B900287440 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
 		};
 		71DFEC352E846B8500C9B12A /* SSSwiftUIGIFView */ = {
 			isa = XCSwiftPackageProductDependency;

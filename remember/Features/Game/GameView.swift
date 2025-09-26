@@ -7,11 +7,13 @@
 
 import ComposableArchitecture
 import SwiftUI
+import GoogleMobileAds
 
 @ViewAction(for: GameCore.self)
 struct GameView: View {
 
-    let store: StoreOf<GameCore>
+    @Bindable
+    var store: StoreOf<GameCore>
 
     @Dependency(\.appStyle) var appStyle
 
@@ -52,6 +54,9 @@ struct GameView: View {
     private let impactSoft = UIImpactFeedbackGenerator(style: .soft)
     private let impactMedium = UIImpactFeedbackGenerator(style: .medium)
     private let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+
+    @StateObject
+    private var rewardedViewModel = RewardedViewModel()
 
     var body: some View {
         GeometryReader { reader in
@@ -115,7 +120,7 @@ struct GameView: View {
 
                             ToolbarItem {
                                 Button {
-                                    send(.showSymbols)
+                                    send(.checkEntitlement)
                                 } label: {
                                     Image(systemName: "lightbulb.max.fill")
                                         .renderingMode(.template)
@@ -190,6 +195,10 @@ struct GameView: View {
             .background(appStyle.color(.surface))
             .disabled(store.secondsElapsed > 0)
             .onAppear {
+                Task {
+                    await rewardedViewModel.loadAd()
+                }
+
                 prefix = Int(reader.size.width / ratio)
 
                 send(.onAppear)
@@ -198,6 +207,27 @@ struct GameView: View {
                 if oldChances > newChances {
                     impactHeavy.impactOccurred()
                 }
+            }
+            .sheet(isPresented: $store.showAd) {
+                withDependencies {
+                    $0.appStyle = appStyle
+                } operation: {
+                    PromotionView(
+                        pro: {
+                            print("show pro")
+                        },
+                        ad: {
+                            rewardedViewModel.showAd()
+                        }
+                    )
+                }
+            }
+            .onChange(of: rewardedViewModel.showSymbols) { _, newValue in
+                if newValue {
+                    send(.showSymbols)
+                }
+
+                send(.resetShowAd)
             }
         }
     }
