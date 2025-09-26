@@ -9,6 +9,7 @@ import AVKit
 import ComposableArchitecture
 import SwiftUI
 import SSSwiftUIGIFView
+import RevenueCatUI
 
 @ViewAction(for: AppCore.self)
 struct AppView: View {
@@ -35,6 +36,11 @@ struct AppView: View {
     var showOnboarding = false
 
     @Environment(\.colorScheme) var colorScheme: ColorScheme
+
+    @Environment(\.openURL) var openURL
+
+    @State
+    private var showRevenueCatUI = false
 
     var body: some View {
         VStack {
@@ -98,7 +104,7 @@ struct AppView: View {
                             title: "Terms of Use",
                             font: .caption()
                         ) {
-
+                            openURL(URL(string: "https://www.ebucelik.dev/remember_terms")!)
                         }
                     }
 
@@ -111,7 +117,7 @@ struct AppView: View {
                             title: "Privacy Policy",
                             font: .caption()
                         ) {
-
+                            openURL(URL(string: "https://www.ebucelik.dev/remember_privacy")!)
                         }
                     }
                 }
@@ -133,10 +139,26 @@ struct AppView: View {
                 $0.appStyle = appStyle
             } operation: {
                 OnboardingView()
-//                    .onDisappear {
-//                        showRevenueCatUI = true
-//                    }
+                    .onDisappear {
+                        showRevenueCatUI = true
+                    }
             }
+        }
+        .sheet(isPresented: $showRevenueCatUI) {
+            PaywallView(displayCloseButton: true)
+                .onPurchaseCompleted { customerInfo in
+                    print(customerInfo)
+
+                    send(.setIsEntitled(true))
+                }
+                .onRestoreCompleted { customerInfo in
+                    print(customerInfo)
+
+                    send(.setIsEntitled(true))
+                }
+                .onPurchaseCancelled {
+                    send(.setIsEntitled(false))
+                }
         }
     }
 

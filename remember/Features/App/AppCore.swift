@@ -19,6 +19,7 @@ struct AppCore {
     enum Action: ViewAction {
         enum ViewAction {
             case startGame
+            case setIsEntitled(Bool)
         }
 
         enum AsyncAction {
@@ -43,6 +44,9 @@ struct AppCore {
                     state.gameState = GameCore.State()
                     
                     return .send(.async(.setStartGame(true)))
+
+                case let .setIsEntitled(isEntitled):
+                    return .send(.gameAction(.view(.setIsEntitled(isEntitled))))
                 }
 
             case let .async(asyncActions):

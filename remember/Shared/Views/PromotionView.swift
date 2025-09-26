@@ -7,12 +7,15 @@
 
 import Dependencies
 import SwiftUI
+import SSSwiftUIGIFView
 
 struct PromotionView: View {
 
     @Environment(\.dismiss) var dismiss
 
     @Dependency(\.appStyle) var appStyle
+
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
 
     let pro: () -> Void
     let ad: () -> Void
@@ -31,6 +34,14 @@ struct PromotionView: View {
             }
             .padding(.horizontal, 16)
             .padding(.top, 24)
+
+            Spacer()
+
+            SwiftUIGIFPlayerView(
+                gifURL: colorScheme == .dark ? OnboardingPage.bulb.urlDark : OnboardingPage.bulb.url,
+                isShowProgressView: true
+            )
+            .aspectRatio(0.45, contentMode: .fit)
 
             Spacer()
 
@@ -62,11 +73,8 @@ struct PromotionView: View {
                 ) {
                     ad()
                 }
-                .buttonStyle(.glassProminent)
                 .padding(.vertical, 8)
             }
-
-            Spacer()
         }
         .background(appStyle.color(.surface))
     }

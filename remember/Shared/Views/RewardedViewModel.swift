@@ -23,7 +23,7 @@ class RewardedViewModel: NSObject, ObservableObject, FullScreenContentDelegate {
             }
 
             rewardedAd = try await RewardedAd.load(
-                with: testAdId,
+                with: liveAdId,
                 request: Request()
             )
             rewardedAd?.fullScreenContentDelegate = self

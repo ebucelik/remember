@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import SwiftUI
 import GoogleMobileAds
+import RevenueCat
 
 @main
 struct rememberApp: App {
@@ -38,10 +39,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             await MobileAds.shared.start()
         }
 
-//#if DEBUG
-//        Purchases.logLevel = .debug
-//#endif
-//        Purchases.configure(withAPIKey: "appl_iHwjQQYeFvTDpyFlSsDvHkVvJVj")
+        Purchases.configure(withAPIKey: "appl_IpMkPNRJDMzzWKoCwqcYhfNympS")
+
         return true
     }
 }

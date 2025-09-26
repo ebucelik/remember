@@ -49,4 +49,11 @@ extension OnboardingPage {
             urlDark: URL(string: "https://firebasestorage.googleapis.com/v0/b/paysplit-4d2c4.appspot.com/o/onboarding3Dark.gif?alt=media&token=2c3ed054-f894-436f-afa9-9134ee53ef69")!
         )
     ]
+
+    static let bulb = OnboardingPage(
+        title: "Bulb",
+        text: "Too many symbols to remember? No worries, just use the bulb to show the symbols again",
+        url: URL(string: "https://firebasestorage.googleapis.com/v0/b/paysplit-4d2c4.appspot.com/o/onboarding3.gif?alt=media&token=00f1f876-d034-4f7f-9797-08d3d8bc346d")!,
+        urlDark: URL(string: "https://firebasestorage.googleapis.com/v0/b/paysplit-4d2c4.appspot.com/o/onboarding3Dark.gif?alt=media&token=2c3ed054-f894-436f-afa9-9134ee53ef69")!
+    )
 }

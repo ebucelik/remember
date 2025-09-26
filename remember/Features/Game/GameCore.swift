@@ -9,6 +9,7 @@ import ComposableArchitecture
 import UIKit
 import SwiftUI
 import Algorithms
+import RevenueCat
 
 @Reducer
 struct GameCore {
@@ -83,6 +84,7 @@ struct GameCore {
             case showSymbols
             case returnToHome
             case resetShowAd
+            case setIsEntitled(Bool)
         }
 
         enum AsyncAction {
@@ -91,6 +93,7 @@ struct GameCore {
             case hideSymbols
             case showSelectableSymbolsInGame(Bool)
             case deductSecond
+            case setIsEntitled(Bool)
         }
 
         enum DelegateAction {
@@ -118,9 +121,25 @@ struct GameCore {
             case .view(let viewActions):
                 switch viewActions {
                 case .onAppear:
-                    guard state.symbolStates.count != state.symbolSize else { return .none }
+                    var effects: [Effect<Action>] = [
+                        .run { send in
+                            let customerInfo = try await Purchases.shared.customerInfo()
 
-                    return .send(.async(.setSymbols(state.symbolSize)))
+                            if customerInfo.entitlements.all["pro"]?.isActive == true {
+                                await send(.async(.setIsEntitled(true)))
+                            }
+                        } catch: { error, send in
+                            print(error.localizedDescription)
+
+                            await send(.async(.setIsEntitled(false)))
+                        }
+                    ]
+
+                    guard state.symbolStates.count != state.symbolSize else { return .concatenate(effects) }
+
+                    effects.append(.send(.async(.setSymbols(state.symbolSize))))
+
+                    return .concatenate(effects)
 
                 case .checkEntitlement:
                     if state.isEntitled {
@@ -158,6 +177,9 @@ struct GameCore {
                     state.showAd = false
 
                     return .none
+
+                case let .setIsEntitled(isEntitled):
+                    return .send(.async(.setIsEntitled(isEntitled)))
                 }
 
             case .async(let asyncActions):
@@ -267,6 +289,11 @@ struct GameCore {
 
                         return .concatenate(effects)
                     }
+
+                    return .none
+
+                case let .setIsEntitled(isEntitled):
+                    state.isEntitled = isEntitled
 
                     return .none
                 }

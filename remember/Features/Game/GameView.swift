@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import SwiftUI
 import GoogleMobileAds
+import RevenueCatUI
 
 @ViewAction(for: GameCore.self)
 struct GameView: View {
@@ -16,6 +17,9 @@ struct GameView: View {
     var store: StoreOf<GameCore>
 
     @Dependency(\.appStyle) var appStyle
+
+    @State
+    private var showRevenueCatUI = false
 
     @AppStorage("highScore")
     private var highScore = 0
@@ -214,7 +218,9 @@ struct GameView: View {
                 } operation: {
                     PromotionView(
                         pro: {
-                            print("show pro")
+                            send(.resetShowAd)
+
+                            showRevenueCatUI.toggle()
                         },
                         ad: {
                             rewardedViewModel.showAd()
@@ -228,6 +234,22 @@ struct GameView: View {
                 }
 
                 send(.resetShowAd)
+            }
+            .sheet(isPresented: $showRevenueCatUI) {
+                PaywallView(displayCloseButton: true)
+                    .onPurchaseCompleted { customerInfo in
+                        print(customerInfo)
+
+                        send(.setIsEntitled(true))
+                    }
+                    .onRestoreCompleted { customerInfo in
+                        print(customerInfo)
+
+                        send(.setIsEntitled(true))
+                    }
+                    .onPurchaseCancelled {
+                        send(.setIsEntitled(false))
+                    }
             }
         }
     }
