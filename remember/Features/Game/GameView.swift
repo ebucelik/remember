@@ -40,17 +40,6 @@ struct GameView: View {
         return columns
     }
 
-    private var dynamicRows: [GridItem] {
-        let numOfRows = Int((CGFloat(store.selectableEmojis.count) / 6.0).rounded(.up))
-        var rows = [GridItem]()
-
-        for _ in (0..<numOfRows) {
-            rows.append(GridItem(.flexible()))
-        }
-
-        return rows
-    }
-
     private var ratio: Double {
         let estimatedSymbolSize =
             (Double(store.symbolSize) * 1.5) > 70
@@ -177,7 +166,7 @@ struct GameView: View {
                         withDependencies {
                             $0.appStyle = appStyle
                         } operation: {
-                            AnimatedButton(title: "Back to Start") {
+                            AnimatedButton(title: "Try Again") {
                                 send(.returnToHome)
                             }
                         }
@@ -282,7 +271,7 @@ struct GameView: View {
             Spacer()
 
             if store.showSelectableSymbolsInGame {
-                LazyHGrid(rows: dynamicRows) {
+                LazyVGrid(columns: dynamicColumns) {
                     ForEach(store.selectableEmojis, id: \.id) {
                         emoji in
                         Text(emoji.emoji)
@@ -293,9 +282,9 @@ struct GameView: View {
                                         size: reader.size.height
                                         > reader.size.width
                                         ? reader.size.width
-                                            * 0.15
+                                            * 0.12
                                         : reader.size.height
-                                            * 0.15
+                                            * 0.12
                                     )
                                 )
                             )
@@ -319,9 +308,8 @@ struct GameView: View {
                             }
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: 100)
-                .padding()
-                .glassEffect()
+                .padding(2)
+                .glassEffect(in: .rect(cornerRadius: 16))
                 .padding(.horizontal, 8)
             }
         }
